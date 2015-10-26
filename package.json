@@ -1,0 +1,34 @@
+{
+  "name": "duplexer",
+  "version": "0.0.1",
+  "description": "Creates a duplex stream",
+  "author": {
+    "name": "nuintun",
+    "email": "nuintun@qq.com"
+  },
+  "homepage": "https://nuintun.github.io/duplexer",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/nuintun/duplexer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nuintun/duplexer/issues",
+    "email": "nuintun@qq.com"
+  },
+  "license": "MIT",
+  "main": "index",
+  "keywords": [
+    "duplex",
+    "duplexer",
+    "stream",
+    "join",
+    "combine"
+  ],
+  "dependencies": {
+    "is": "^3.1.0",
+    "readable-stream": "^2.0.3"
+  },
+  "devDependencies": {
+  },
+  "readmeFilename": "README.md"
+}
