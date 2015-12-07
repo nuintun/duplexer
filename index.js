@@ -40,7 +40,7 @@ function Duplexer(options, writable, readable){
   }
 
   if (!is.fn(readable.read)) {
-    readable = (new Readable()).wrap(readable);
+    readable = (new Readable(options)).wrap(readable);
   }
 
   this._writable = writable;
