@@ -25,8 +25,8 @@
     "combine"
   ],
   "dependencies": {
-    "is": "^3.2.0",
-    "readable-stream": "^2.2.2"
+    "is": "^3.2.1",
+    "readable-stream": "^2.2.3"
   },
   "readmeFilename": "README.md"
 }
