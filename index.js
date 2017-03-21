@@ -13,7 +13,7 @@ var Readable = Stream.Readable;
  * Duplexer
  * @type {Function}
  */
-function Duplexer(options, writable, readable){
+function Duplexer(options, writable, readable) {
   var self = this;
 
   if (readable === undefined) {
@@ -31,8 +31,8 @@ function Duplexer(options, writable, readable){
   } else {
     if (!is.bool(options.bubbleErrors)) {
       throw new TypeError(
-        String(options.bubbleErrors) +
-        ' is not a Boolean value. `bubbleErrors` option of duplexer must be Boolean (`true` by default).'
+        String(options.bubbleErrors)
+        + ' is not a Boolean value. `bubbleErrors` option of duplexer must be Boolean (`true` by default).'
       );
     }
 
@@ -49,11 +49,11 @@ function Duplexer(options, writable, readable){
   this._drained = true;
   this._forwarding = false;
 
-  this.once('finish', function (){
+  this.once('finish', function() {
     writable.end();
   });
 
-  writable.on('drain', function (){
+  writable.on('drain', function() {
     var ondrain = self._ondrain;
 
     self._ondrain = null;
@@ -61,24 +61,24 @@ function Duplexer(options, writable, readable){
     if (ondrain) ondrain();
   });
 
-  writable.once('finish', function (){
+  writable.once('finish', function() {
     self.end();
   });
 
-  readable.on('readable', function (){
+  readable.on('readable', function() {
     self._forward();
   });
 
-  readable.once('end', function (){
+  readable.once('end', function() {
     return self.push(null);
   });
 
   if (this._bubbleErrors) {
-    writable.on('error', function (error){
+    writable.on('error', function(error) {
       return self.emit('error', error);
     });
 
-    readable.on('error', function (error){
+    readable.on('error', function(error) {
       return self.emit('error', error);
     });
   }
@@ -91,7 +91,7 @@ Duplexer.prototype = Object.create(Duplex.prototype, { constructor: { value: Dup
  * _read
  * @private
  */
-Duplexer.prototype._read = function (){
+Duplexer.prototype._read = function() {
   this._drained = true;
 
   this._forward();
@@ -104,7 +104,7 @@ Duplexer.prototype._read = function (){
  * @param next
  * @private
  */
-Duplexer.prototype._write = function (chunk, encoding, next){
+Duplexer.prototype._write = function(chunk, encoding, next) {
   if (!this._writable.write(chunk)) {
     this._ondrain = next;
   } else {
@@ -116,7 +116,7 @@ Duplexer.prototype._write = function (chunk, encoding, next){
  * _forward
  * @private
  */
-Duplexer.prototype._forward = function (){
+Duplexer.prototype._forward = function() {
   if (this._forwarding || !this._drained) return;
 
   this._forwarding = true;
@@ -139,7 +139,7 @@ Duplexer.prototype._forward = function (){
 /**
  * exports module
  */
-module.exports = function (options, writable, readable){
+module.exports = function(options, writable, readable) {
   return new Duplexer(options, writable, readable);
 };
 module.exports.Duplexer = Duplexer;
