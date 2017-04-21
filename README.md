@@ -1,5 +1,4 @@
-duplexer
-=========
+# duplexer
 
 >Creates a duplex stream
 >
