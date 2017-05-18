@@ -16,7 +16,7 @@ var Readable = Stream.Readable;
 function Duplexer(options, writable, readable) {
   var self = this;
 
-  if (readable === undefined) {
+  if (arguments.length < 3) {
     readable = writable;
     writable = options;
     options = {};
