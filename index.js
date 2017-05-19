@@ -1,85 +1,84 @@
-/**
- * Created by nuintun on 2015/9/25.
+/*!
+ * Duplexer
+ * Version: 0.0.1
+ * Date: 2017/05/19
+ * https://github.com/nuintun/duplexer
+ * https://github.com/deoxxa/duplexer2
+ *
+ * This is licensed under the MIT License (MIT).
+ * For details, see: https://github.com/nuintun/duplexer/blob/master/LICENSE
  */
 
 'use strict';
 
-var is = require('is');
 var Stream = require('readable-stream');
 var Duplex = Stream.Duplex;
 var Readable = Stream.Readable;
 
+var undef = void(0);
+var toString = Object.prototype.toString;
+
+/**
+ * Is function
+ *
+ * @param {any} value
+ * @returns {Boolean}
+ */
+function isFunction(value) {
+  return toString.call(value) === '[object Function]';
+}
+
 /**
  * Duplexer
+ *
  * @type {Function}
  */
 function Duplexer(options, writable, readable) {
-  var self = this;
+  var context = this;
 
-  if (arguments.length < 3) {
+  if (typeof readable === undef) {
     readable = writable;
     writable = options;
-    options = {};
-  } else {
-    options = options || {};
+    options = null;
   }
 
-  Duplex.call(this, options);
+  Duplex.call(context, options);
 
-  if (options.bubbleErrors === undefined) {
-    this._bubbleErrors = true;
-  } else {
-    if (!is.bool(options.bubbleErrors)) {
-      throw new TypeError(
-        String(options.bubbleErrors)
-        + ' is not a Boolean value. `bubbleErrors` option of duplexer must be Boolean (`true` by default).'
-      );
-    }
-
-    this._bubbleErrors = options.bubbleErrors;
-  }
-
-  if (!is.fn(readable.read)) {
+  if (!isFunction(readable.read)) {
     readable = (new Readable(options)).wrap(readable);
   }
 
-  this._writable = writable;
-  this._readable = readable;
-  this._ondrain = null;
-  this._drained = true;
-  this._forwarding = false;
+  context._writable = writable;
+  context._readable = readable;
+  context._waiting = false;
 
-  this.once('finish', function() {
+  writable.once('finish', function() {
+    context.end();
+  });
+
+  context.once('finish', function() {
     writable.end();
   });
 
-  writable.on('drain', function() {
-    var ondrain = self._ondrain;
-
-    self._ondrain = null;
-
-    if (ondrain) ondrain();
-  });
-
-  writable.once('finish', function() {
-    self.end();
-  });
-
   readable.on('readable', function() {
-    self._forward();
+    if (context._waiting) {
+      context._waiting = false;
+
+      context._read();
+    }
   });
 
   readable.once('end', function() {
-    return self.push(null);
+    context.push(null);
   });
 
-  if (this._bubbleErrors) {
-    writable.on('error', function(error) {
-      return self.emit('error', error);
+  if (!options || options.bubbleErrors) {
+    writable.on('error', function(err) {
+      context.emit('error', err);
     });
 
-    readable.on('error', function(error) {
-      return self.emit('error', error);
+    readable.on('error', function(err) {
+      context.emit('error', err);
     });
   }
 }
@@ -88,52 +87,36 @@ function Duplexer(options, writable, readable) {
 Duplexer.prototype = Object.create(Duplex.prototype, { constructor: { value: Duplexer } });
 
 /**
- * _read
- * @private
- */
-Duplexer.prototype._read = function() {
-  this._drained = true;
-
-  this._forward();
-};
-
-/**
  * _write
+ *
  * @param chunk
  * @param encoding
  * @param next
  * @private
  */
 Duplexer.prototype._write = function(chunk, encoding, next) {
-  if (!this._writable.write(chunk)) {
-    this._ondrain = next;
-  } else {
-    next();
-  }
+  this._writable.write(chunk, encoding, next);
 };
 
 /**
- * _forward
+ * _read
+ *
  * @private
  */
-Duplexer.prototype._forward = function() {
-  if (this._forwarding || !this._drained) return;
+Duplexer.prototype._read = function() {
+  var buf;
+  var reads = 0;
+  var context = this;
 
-  this._forwarding = true;
+  while ((buf = context._readable.read()) !== null) {
+    context.push(buf);
 
-  var data = this._readable.read();
-
-  while (data !== null) {
-    this._drained = this.push(data);
-
-    if (this._drained) {
-      data = this._readable.read();
-    } else {
-      break;
-    }
+    reads++;
   }
 
-  this._forwarding = false;
+  if (reads === 0) {
+    context._waiting = true;
+  }
 };
 
 /**
