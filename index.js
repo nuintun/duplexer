@@ -73,12 +73,12 @@ function Duplexer(options, writable, readable) {
   });
 
   if (!options || options.bubbleErrors) {
-    writable.on('error', function(err) {
-      context.emit('error', err);
+    writable.on('error', function(error) {
+      context.emit('error', error);
     });
 
-    readable.on('error', function(err) {
-      context.emit('error', err);
+    readable.on('error', function(error) {
+      context.emit('error', error);
     });
   }
 }
