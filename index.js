@@ -1,123 +1,113 @@
-/*!
- * Duplexer
- * Version: 0.0.1
- * Date: 2017/05/19
- * https://github.com/nuintun/duplexer
- * https://github.com/deoxxa/duplexer2
- *
- * This is licensed under the MIT License (MIT).
- * For details, see: https://github.com/nuintun/duplexer/blob/master/LICENSE
+/**
+ * @module index
+ * @license MIT
+ * @version 2017/11/13
  */
 
 'use strict';
 
-var Stream = require('readable-stream');
-var Duplex = Stream.Duplex;
-var Readable = Stream.Readable;
+const Stream = require('readable-stream');
+const Duplex = Stream.Duplex;
+const Readable = Stream.Readable;
 
-var undef = void(0);
-var toString = Object.prototype.toString;
+const undef = void(0);
+const toString = Object.prototype.toString;
 
 /**
- * Is function
- *
+ * @function isFunction
  * @param {any} value
- * @returns {Boolean}
+ * @returns {boolean}
  */
 function isFunction(value) {
   return toString.call(value) === '[object Function]';
 }
 
 /**
- * Duplexer
- *
- * @type {Function}
+ * @class Duplexer
  */
-function Duplexer(options, writable, readable) {
-  var context = this;
-
-  if (typeof readable === undef) {
-    readable = writable;
-    writable = options;
-    options = null;
-  }
-
-  Duplex.call(context, options);
-
-  if (!isFunction(readable.read)) {
-    readable = (new Readable(options)).wrap(readable);
-  }
-
-  context._writable = writable;
-  context._readable = readable;
-  context._waiting = false;
-
-  writable.once('finish', function() {
-    context.end();
-  });
-
-  context.once('finish', function() {
-    writable.end();
-  });
-
-  readable.on('readable', function() {
-    if (context._waiting) {
-      context._waiting = false;
-
-      context._read();
+class Duplexer extends Duplex {
+  /**
+   * @constructor
+   * @param {Object} options
+   * @param {Writable} writable
+   * @param {Readable} readable
+   */
+  constructor(options, writable, readable) {
+    if (typeof readable === undef) {
+      readable = writable;
+      writable = options;
+      options = null;
     }
-  });
 
-  readable.once('end', function() {
-    context.push(null);
-  });
+    if (!isFunction(readable.read)) {
+      readable = (new Readable(options)).wrap(readable);
+    }
 
-  if (!options || options.bubbleErrors) {
-    writable.on('error', function(error) {
-      context.emit('error', error);
+    this._writable = writable;
+    this._readable = readable;
+    this._waiting = false;
+
+    writable.once('finish', () => {
+      this.end();
     });
 
-    readable.on('error', function(error) {
-      context.emit('error', error);
+    this.once('finish', () => {
+      writable.end();
     });
+
+    readable.on('readable', () => {
+      if (this._waiting) {
+        this._waiting = false;
+
+        this._read();
+      }
+    });
+
+    readable.once('end', () => {
+      this.push(null);
+    });
+
+    if (!options || options.bubbleErrors) {
+      writable.on('error', (error) => {
+        this.emit('error', error);
+      });
+
+      readable.on('error', (error) => {
+        this.emit('error', error);
+      });
+    }
+  }
+
+  /**
+   * @method _write
+   * @private
+   * @param {any} chunk
+   * @param {string} encoding
+   * @param {Function} next
+   */
+  _write(chunk, encoding, next) {
+    this._writable.write(chunk, encoding, next);
+  }
+
+  /**
+   * @method _read
+   * @private
+   */
+  _read() {
+    let buf;
+    let reads = 0;
+
+    while ((buf = this._readable.read()) !== null) {
+      this.push(buf);
+
+      reads++;
+    }
+
+    if (reads === 0) {
+      this._waiting = true;
+    }
   }
 }
-
-// extend
-Duplexer.prototype = Object.create(Duplex.prototype, { constructor: { value: Duplexer } });
-
-/**
- * _write
- *
- * @param chunk
- * @param encoding
- * @param next
- * @private
- */
-Duplexer.prototype._write = function(chunk, encoding, next) {
-  this._writable.write(chunk, encoding, next);
-};
-
-/**
- * _read
- *
- * @private
- */
-Duplexer.prototype._read = function() {
-  var buf;
-  var reads = 0;
-  var context = this;
-
-  while ((buf = context._readable.read()) !== null) {
-    context.push(buf);
-
-    reads++;
-  }
-
-  if (reads === 0) {
-    context._waiting = true;
-  }
-};
 
 /**
  * exports module

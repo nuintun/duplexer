@@ -15,6 +15,9 @@
     "url": "https://github.com/nuintun/duplexer/issues",
     "email": "nuintun@qq.com"
   },
+  "engines": {
+    "node": ">=4.0.0"
+  },
   "license": "MIT",
   "main": "index",
   "keywords": [
@@ -24,8 +27,5 @@
     "join",
     "combine"
   ],
-  "dependencies": {
-    "readable-stream": "^2.3.3"
-  },
   "readmeFilename": "README.md"
 }
