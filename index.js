@@ -39,6 +39,8 @@ class Duplexer extends Duplex {
       options = null;
     }
 
+    super(options);
+
     if (!isFunction(readable.read)) {
       readable = (new Readable(options)).wrap(readable);
     }
