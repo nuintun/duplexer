@@ -112,7 +112,11 @@ class Duplexer extends Duplex {
 }
 
 /**
- * exports module
+ * @function duplexer
+ * @param {Object} options
+ * @param {Writable} writable
+ * @param {Readable} readable
+ * @returns {Duplex}
  */
 module.exports = function(options, writable, readable) {
   return new Duplexer(options, writable, readable);
