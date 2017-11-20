@@ -10,7 +10,7 @@ const Stream = require('readable-stream');
 const Duplex = Stream.Duplex;
 const Readable = Stream.Readable;
 
-const undef = void(0);
+const undef = void 0;
 const toString = Object.prototype.toString;
 
 /**
@@ -42,7 +42,7 @@ class Duplexer extends Duplex {
     super(options);
 
     if (!isFunction(readable.read)) {
-      readable = (new Readable(options)).wrap(readable);
+      readable = new Readable(options).wrap(readable);
     }
 
     this._writable = writable;
@@ -70,11 +70,11 @@ class Duplexer extends Duplex {
     });
 
     if (!options || options.bubbleErrors) {
-      writable.on('error', (error) => {
+      writable.on('error', error => {
         this.emit('error', error);
       });
 
-      readable.on('error', (error) => {
+      readable.on('error', error => {
         this.emit('error', error);
       });
     }

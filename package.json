@@ -20,12 +20,6 @@
   },
   "license": "MIT",
   "main": "index",
-  "keywords": [
-    "duplex",
-    "duplexer",
-    "stream",
-    "join",
-    "combine"
-  ],
+  "keywords": ["duplex", "duplexer", "stream", "join", "combine"],
   "readmeFilename": "README.md"
 }
