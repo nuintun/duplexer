@@ -6,7 +6,7 @@
 
 'use strict';
 
-const Stream = require('readable-stream');
+const Stream = require('stream');
 const Duplex = Stream.Duplex;
 const Readable = Stream.Readable;
 
