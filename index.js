@@ -11,7 +11,6 @@ const Duplex = Stream.Duplex;
 const Readable = Stream.Readable;
 
 const undef = void 0;
-const toString = Object.prototype.toString;
 
 /**
  * @function isFunction
@@ -19,7 +18,7 @@ const toString = Object.prototype.toString;
  * @returns {boolean}
  */
 function isFunction(value) {
-  return toString.call(value) === '[object Function]';
+  return typeof value === 'function';
 }
 
 /**
@@ -81,8 +80,8 @@ class Duplexer extends Duplex {
   }
 
   /**
-   * @method _write
    * @private
+   * @method _write
    * @param {any} chunk
    * @param {string} encoding
    * @param {Function} next
@@ -92,8 +91,8 @@ class Duplexer extends Duplex {
   }
 
   /**
-   * @method _read
    * @private
+   * @method _read
    */
   _read() {
     let buf;
