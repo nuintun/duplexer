@@ -117,7 +117,8 @@ class Duplexer extends Duplex {
  * @param {Readable} readable
  * @returns {Duplex}
  */
-module.exports = function(options, writable, readable) {
+function duplexer(options, writable, readable) {
   return new Duplexer(options, writable, readable);
-};
-module.exports.Duplexer = Duplexer;
+}
+
+module.exports = duplexer;
