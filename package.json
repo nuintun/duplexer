@@ -1,6 +1,6 @@
 {
   "name": "@nuintun/duplexer",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Creates a duplex stream",
   "author": {
     "name": "nuintun",
