@@ -6,11 +6,7 @@
 
 'use strict';
 
-const Stream = require('stream');
-const Duplex = Stream.Duplex;
-const Readable = Stream.Readable;
-
-const undef = void 0;
+const { Duplex, Readable } = require('stream');
 
 /**
  * @function isFunction
@@ -32,7 +28,7 @@ class Duplexer extends Duplex {
    * @param {Readable} readable
    */
   constructor(options, writable, readable) {
-    if (typeof readable === undef) {
+    if (typeof readable === undefined) {
       readable = writable;
       writable = options;
       options = null;
@@ -48,13 +44,8 @@ class Duplexer extends Duplex {
     this._readable = readable;
     this._waiting = false;
 
-    writable.once('finish', () => {
-      this.end();
-    });
-
-    this.once('finish', () => {
-      writable.end();
-    });
+    writable.once('finish', () => this.end());
+    this.once('finish', () => writable.end());
 
     readable.on('readable', () => {
       if (this._waiting) {
@@ -64,18 +55,11 @@ class Duplexer extends Duplex {
       }
     });
 
-    readable.once('end', () => {
-      this.push(null);
-    });
+    readable.once('end', () => this.push(null));
 
     if (!options || options.bubbleErrors) {
-      writable.on('error', error => {
-        this.emit('error', error);
-      });
-
-      readable.on('error', error => {
-        this.emit('error', error);
-      });
+      writable.on('error', error => this.emit('error', error));
+      readable.on('error', error => this.emit('error', error));
     }
   }
 
@@ -117,8 +101,6 @@ class Duplexer extends Duplex {
  * @param {Readable} readable
  * @returns {Duplex}
  */
-function duplexer(options, writable, readable) {
+module.exports = function duplexer(options, writable, readable) {
   return new Duplexer(options, writable, readable);
-}
-
-module.exports = duplexer;
+};
