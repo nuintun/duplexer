@@ -1,7 +1,7 @@
 {
   "name": "@nuintun/duplexer",
-  "version": "1.0.2",
-  "description": "Creates a duplex stream",
+  "version": "1.0.3",
+  "description": "Creates a duplex stream.",
   "author": {
     "name": "nuintun",
     "email": "nuintun@qq.com"
@@ -19,5 +19,5 @@
   "license": "MIT",
   "main": "index.js",
   "keywords": ["duplex", "duplexer", "stream", "join", "combine"],
-  "homepage": "https://github.com/nuintun/css-deps#readme"
+  "homepage": "https://github.com/nuintun/duplexer#readme"
 }
