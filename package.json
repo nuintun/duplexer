@@ -1,6 +1,6 @@
 {
   "name": "@nuintun/duplexer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Creates a duplex stream",
   "author": {
     "name": "nuintun",
@@ -19,7 +19,7 @@
     "node": ">=4.0.0"
   },
   "license": "MIT",
-  "main": "index",
+  "main": "index.js",
   "keywords": ["duplex", "duplexer", "stream", "join", "combine"],
   "readmeFilename": "README.md"
 }
