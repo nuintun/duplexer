@@ -1,19 +1,17 @@
 {
   "name": "@nuintun/duplexer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Creates a duplex stream",
   "author": {
     "name": "nuintun",
     "email": "nuintun@qq.com"
   },
-  "homepage": "https://nuintun.github.io/duplexer",
   "repository": {
     "type": "git",
-    "url": "git://github.com/nuintun/duplexer.git"
+    "url": "git+https://github.com/nuintun/duplexer.git"
   },
   "bugs": {
-    "url": "https://github.com/nuintun/duplexer/issues",
-    "email": "nuintun@qq.com"
+    "url": "https://github.com/nuintun/duplexer/issues"
   },
   "engines": {
     "node": ">=4.0.0"
@@ -21,5 +19,5 @@
   "license": "MIT",
   "main": "index.js",
   "keywords": ["duplex", "duplexer", "stream", "join", "combine"],
-  "readmeFilename": "README.md"
+  "homepage": "https://github.com/nuintun/css-deps#readme"
 }
